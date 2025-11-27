@@ -991,30 +991,50 @@ const App = () => {
 
                 {/* Search Bar */}
                 <div className="w-full max-w-xl">
-                    <form onSubmit={(e) => { e.preventDefault(); handleQuery(query); }} className="relative">
-                        <input
-                            type="text"
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                            placeholder="Ask about FHE, Zama, FHEVM, Rand Hindi, or TFHE..."
-                            disabled={loading}
-                            className={`w-full p-4 pl-12 pr-4 text-base rounded-full border-2 ${loading ? 'border-gray-200' : `border-gray-300 hover:border-[#ffd208]`} focus:ring-0 focus:border-[#ffd208] transition-colors duration-200 bg-white text-gray-900 font-light shadow-md hover:shadow-lg`}
-                            style={{ paddingLeft: '3rem' }} // For icon
-                        />
-                        <Zap
-                            className={`absolute left-4 top-2/2 transform -translate-y-1/2 w-5 h-5 transition-colors ${loading ? 'text-gray-400' : `text-gray-600`}`}
-                            style={{ color: ACCENT_YELLOW }}
-                        />
-                        <button
-                            type="submit"
-                            disabled={loading || !query.trim()}
-                            className={`absolute right-2 top-2/2 transform -translate-y-1/2 p-2 rounded-full transition-all duration-300 ${loading || !query.trim() ? 'bg-gray-200 text-gray-400' : `bg-[#ffd208] text-gray-900 hover:bg-opacity-90`}`}
-                            title="Submit Query"
-                        >
-                            <Terminal className="w-5 h-5" />
-                        </button>
-                    </form>
-                </div>
+  <form
+    onSubmit={(e) => {
+      e.preventDefault();
+      handleQuery(query);
+    }}
+    className="relative"
+  >
+    <input
+      type="text"
+      value={query}
+      onChange={(e) => setQuery(e.target.value)}
+      placeholder="Ask about FHE, Zama, FHEVM, Rand Hindi, or TFHE..."
+      disabled={loading}
+      className={`w-full p-4 pl-12 pr-12 text-base rounded-full border-2 ${
+        loading ? "border-gray-200" : `border-gray-300 hover:border-[#ffd208]`
+      } focus:ring-0 focus:border-[#ffd208] transition-colors duration-200 bg-white text-gray-900 font-light shadow-md hover:shadow-lg`}
+    />
+
+    {/* LEFT ICON */}
+    <div className="absolute inset-y-0 left-4 flex items-center">
+      <Zap
+        className={`w-5 h-5 transition-colors ${
+          loading ? "text-gray-400" : "text-gray-600"
+        }`}
+        style={{ color: ACCENT_YELLOW }}
+      />
+    </div>
+
+    {/* SUBMIT BUTTON */}
+    <button
+      type="submit"
+      disabled={loading || !query.trim()}
+      className={`absolute inset-y-0 right-2 flex items-center justify-center p-2 rounded-full transition-all duration-300 ${
+        loading || !query.trim()
+          ? "bg-gray-200 text-gray-400"
+          : `bg-[#ffd208] text-gray-900 hover:bg-opacity-90`
+      }`}
+      title="Submit Query"
+    >
+      <Terminal className="w-5 h-5" />
+    </button>
+  </form>
+</div>
+
 
                 {/* AI Result Area */}
                 <AIResultDisplay response={response} loading={loading} error={error} />
