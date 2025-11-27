@@ -1002,13 +1002,13 @@ const App = () => {
                             style={{ paddingLeft: '3rem' }} // For icon
                         />
                         <Zap
-                            className={`absolute left-4 -top-3/2 transform -translate-y-1/2 w-5 h-5 transition-colors ${loading ? 'text-gray-400' : `text-gray-600`}`}
+                            className={`absolute left-4 top-2/2 transform -translate-y-1/2 w-5 h-5 transition-colors ${loading ? 'text-gray-400' : `text-gray-600`}`}
                             style={{ color: ACCENT_YELLOW }}
                         />
                         <button
                             type="submit"
                             disabled={loading || !query.trim()}
-                            className={`absolute right-2 -top-3/2 transform -translate-y-1/2 p-2 rounded-full transition-all duration-300 ${loading || !query.trim() ? 'bg-gray-200 text-gray-400' : `bg-[#ffd208] text-gray-900 hover:bg-opacity-90`}`}
+                            className={`absolute right-2 top-2/2 transform -translate-y-1/2 p-2 rounded-full transition-all duration-300 ${loading || !query.trim() ? 'bg-gray-200 text-gray-400' : `bg-[#ffd208] text-gray-900 hover:bg-opacity-90`}`}
                             title="Submit Query"
                         >
                             <Terminal className="w-5 h-5" />
