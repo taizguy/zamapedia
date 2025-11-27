@@ -1,0 +1,21 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# Example redirect: if you deploy your proxy elsewhere (https://my-proxy.example.com),
+# you can proxy /api/* to it during production by adding redirects like below.
+# Note: Netlify's redirects configuration doesn't support environment variables in the "to" field,
+# so replace the target with your deployed server URL.
+
+# [[redirects]]
+#   from = "/api/*"
+#   to = "https://my-proxy.example.com/:splat"
+#   status = 200
+#   force = true
+
+# If you convert the server to Netlify Functions, you could map /api/fetch to a function:
+# [[redirects]]
+#   from = "/api/fetch"
+#   to = "/.netlify/functions/fetch"
+#   status = 200
+#   force = true

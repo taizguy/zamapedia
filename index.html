@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>zamapedia-app</title>
+    <!-- Tailwind CDN for development (provides full utility set when local generation misses classes) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- Tailwind safelist helper: keeps dynamically-used classes from being purged -->
+    <div style="display:none" aria-hidden="true" class="min-h-screen bg-white text-gray-900 text-gray-600 text-gray-400 bg-gray-50 bg-gray-200 hover:text-gray-900 hover:bg-opacity-90 border border-gray-300 border-2 rounded-full rounded-xl shadow-lg p-6 px-4 py-2 font-light font-medium w-full max-w-4xl mx-auto">
+    </div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

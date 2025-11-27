@@ -1,0 +1,241 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+/* Add a custom font */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Small helper animations for the welcome overlay */
+.animate-spin-slow {
+    animation: spin-slow 8s linear infinite;
+}
+
+@keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Simple welcome enter/exit helpers using opacity + scale */
+.welcome-card-enter {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transition: opacity 450ms ease, transform 450ms ease;
+}
+.welcome-card-init {
+    opacity: 0;
+    transform: translateY(8px) scale(.96);
+}
+.welcome-card-exit {
+    opacity: 0;
+    transform: translateY(-8px) scale(.94);
+    transition: opacity 350ms ease, transform 350ms ease;
+}
+
+/* Floating animation for background character */
+@keyframes floatY {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+    100% { transform: translateY(0); }
+}
+.animate-float-slow {
+    animation: floatY 4.5s ease-in-out infinite;
+}
+
+/* Speech bubble used next to the background character */
+.speech-bubble {
+    position: absolute;
+    top: -10px;
+    right: 110%;
+    background: #ffffff;
+    color: #111827;
+    padding: 8px 12px;
+    border-radius: 9999px;
+    box-shadow: 0 6px 18px rgba(16,24,40,0.08);
+    font-weight: 600;
+    font-size: 0.9rem;
+    transform-origin: 100% 50%;
+    white-space: nowrap;
+    opacity: 0; /* animate in */
+    animation: bubble-pop 450ms cubic-bezier(.2,.9,.3,1) 600ms forwards;
+}
+
+@keyframes bubble-pop {
+    0% { transform: scale(.85) translateY(6px); opacity: 0; }
+    60% { transform: scale(1.03) translateY(-2px); opacity: 1; }
+    100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+/* Pop-out animation: scale & lift briefly */
+@keyframes pop-out {
+    0% { transform: translateY(0) scale(1); }
+    30% { transform: translateY(-18px) scale(1.08); }
+    60% { transform: translateY(-6px) scale(1.04); }
+    100% { transform: translateY(0) scale(1); }
+}
+.pop-out {
+    animation: pop-out 700ms cubic-bezier(.2,.9,.3,1) forwards;
+}
+
+/* Waving hand small emoji */
+@keyframes hand-wave {
+    0% { transform: rotate(-25deg) translateY(0); }
+    50% { transform: rotate(20deg) translateY(-2px); }
+    100% { transform: rotate(-25deg) translateY(0); }
+}
+.hand-wave {
+    display: inline-block;
+    transform-origin: 50% 50%;
+    animation: hand-wave 900ms ease-in-out 0s 3;
+}
+
+/* Hand bubble container positioned relative to the avatar */
+.hand-bubble {
+    position: absolute;
+    right: -14px;
+    top: -12px;
+    background: transparent;
+    font-size: 1.4rem;
+    pointer-events: none;
+}
+
+/* Animated Welcome Background Styles */
+.animated-welcome-bg {
+    --mx: 0px;
+    --my: 0px;
+    --eye-x: 0px;
+    --eye-y: 0px;
+    pointer-events: none;
+}
+.welcome-img-wrap {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translate(var(--mx), var(--my)) rotate(var(--tilt, 0deg));
+    transition: transform 280ms cubic-bezier(.2,.9,.3,1), filter 420ms ease;
+    will-change: transform;
+}
+.welcome-img {
+    width: clamp(360px, 42vw, 640px);
+    height: auto;
+    border-radius: 28px;
+    filter: drop-shadow(0 20px 40px rgba(0,0,0,0.45));
+    transform-origin: center center;
+    transform: translateZ(0) rotate(calc(var(--mx) / 80));
+    opacity: 0.98;
+}
+.welcome-overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+}
+
+/* Pupils follow cursor via CSS variable; scale to simulate blink */
+.eye-pupil { transform-origin: center; transition: transform 160ms linear, r 160ms linear; }
+.animated-welcome-bg.welcome-blink .eye-pupil { transform: scaleY(0.06); }
+.animated-welcome-bg.welcome-blink .eye-white { transform-origin: center; opacity: 0.0; transition: opacity 140ms; }
+
+/* wink support */
+.animated-welcome-bg.wink-left .left-eye .eye-lid { opacity: 1; transform-origin: center; transform: scaleY(0.08); transition: opacity 80ms, transform 120ms; }
+.animated-welcome-bg.wink-right .right-eye .eye-lid { opacity: 1; transform-origin: center; transform: scaleY(0.08); transition: opacity 80ms, transform 120ms; }
+
+/* Smile draw animation */
+.smile-path {
+    stroke-dasharray: 220;
+    stroke-dashoffset: 220;
+    transition: stroke-dashoffset 850ms cubic-bezier(.2,.85,.25,1), transform 420ms cubic-bezier(.2,.85,.25,1), stroke-width 300ms ease;
+    transform-origin: 50% 50%;
+}
+.animated-welcome-bg .smile-path { stroke-dashoffset: 0; }
+.animated-welcome-bg.smile-wide .smile-path { transform: translateY(-6px) scale(1.04); stroke-width: 9.5; }
+
+/* Smile micro-pulse when class toggled */
+.smile-wide { }
+
+/* gentle breathing */
+@keyframes welcome-breathe {
+    0% { transform: scale(1) translateY(0); }
+    50% { transform: scale(1.008) translateY(-4px); }
+    100% { transform: scale(1) translateY(0); }
+}
+.welcome-img-wrap { animation: welcome-breathe 6s ease-in-out infinite; }
+
+/* Subtle shadow and glow when smile widens */
+.animated-welcome-bg.smile-wide .welcome-img { filter: drop-shadow(0 26px 48px rgba(0,0,0,0.5)) saturate(1.05); }
+
+/* small look-away subtleness to reduce mechanical motion */
+.animated-welcome-bg.look-away .welcome-img { filter: saturate(0.96) contrast(0.98); }
+
+/* Cheek blush */
+.cheek {
+    position: absolute;
+    width: 84px;
+    height: 48px;
+    border-radius: 999px;
+    pointer-events: none;
+    opacity: 0;
+    transform: scale(0.7) translateY(6px);
+    transition: opacity 260ms ease, transform 360ms cubic-bezier(.2,.9,.3,1), filter 360ms ease;
+    filter: blur(6px) saturate(1.2) brightness(1.08);
+    background: radial-gradient(circle at 30% 40%, rgba(255,220,220,0.95) 0%, rgba(255,170,170,0.9) 36%, rgba(255,120,120,0.05) 70%);
+}
+.cheek-left { left: calc(50% - 180px); top: calc(50% - 6px); }
+.cheek-right { right: calc(50% - 180px); top: calc(50% - 6px); }
+
+/* Sparkles */
+.sparkles { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
+.sparkle {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: radial-gradient(circle at 40% 30%, #fff 0%, #ffd208 45%, rgba(255,210,8,0.0) 70%);
+    opacity: 0;
+    transform: scale(0.2) translateY(0);
+    filter: drop-shadow(0 6px 12px rgba(255,210,8,0.14));
+}
+
+/* place sparkles roughly around cheeks via nth-child offsets */
+.sparkles .sparkle:nth-child(1) { left: 42%; top: 54%; }
+.sparkles .sparkle:nth-child(2) { left: 46%; top: 50%; }
+.sparkles .sparkle:nth-child(3) { left: 53%; top: 52%; }
+.sparkles .sparkle:nth-child(4) { left: 58%; top: 56%; }
+.sparkles .sparkle:nth-child(5) { left: 36%; top: 48%; }
+.sparkles .sparkle:nth-child(6) { left: 62%; top: 48%; }
+
+@keyframes sparkle-pop {
+    0% { opacity: 0; transform: scale(0.2) translateY(6px); }
+    40% { opacity: 1; transform: scale(1.05) translateY(-4px); }
+    100% { opacity: 0; transform: scale(0.6) translateY(-10px); }
+}
+
+/* Triggered when smile widens */
+.animated-welcome-bg.smile-wide .cheek { opacity: 1; transform: scale(1) translateY(0); }
+.animated-welcome-bg.smile-wide .sparkle {
+    animation-name: sparkle-pop;
+    animation-duration: 700ms;
+    animation-timing-function: cubic-bezier(.2,.9,.25,1);
+    animation-fill-mode: forwards;
+}
+.animated-welcome-bg.smile-wide .sparkle:nth-child(1) { animation-delay: 0ms; }
+.animated-welcome-bg.smile-wide .sparkle:nth-child(2) { animation-delay: 60ms; }
+.animated-welcome-bg.smile-wide .sparkle:nth-child(3) { animation-delay: 120ms; }
+.animated-welcome-bg.smile-wide .sparkle:nth-child(4) { animation-delay: 180ms; }
+.animated-welcome-bg.smile-wide .sparkle:nth-child(5) { animation-delay: 240ms; }
+.animated-welcome-bg.smile-wide .sparkle:nth-child(6) { animation-delay: 300ms; }
+
+/* ensure sparkles don't remain visible after the class is removed */
+.sparkle { transition: opacity 200ms linear; }
+
+/* Small responsive adjustments */
+@media (max-width: 640px) {
+    .welcome-img { width: 92vw; border-radius: 18px; }
+}
