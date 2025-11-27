@@ -1025,7 +1025,7 @@ const App = () => {
       disabled={loading || !query.trim()}
       className={`absolute inset-y-0 right-2 flex items-center ${
         loading || !query.trim()
-          ? "bg-gray-200 text-gray-400"
+          ? "text-gray-400"
           : `bg-[#ffd208] text-gray-900 hover:bg-opacity-90`
       }`}
       title="Submit Query"
