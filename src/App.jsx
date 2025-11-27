@@ -1002,7 +1002,7 @@ const App = () => {
                             style={{ paddingLeft: '3rem' }} // For icon
                         />
                         <Zap
-                            className={`absolute left-4 top-3/2  transform -translate-y-1/2 w-5 h-5 transition-colors ${loading ? 'text-gray-400' : `text-gray-600`}`}
+                            className={`absolute left-4  transform -translate-y-1/2 w-5 h-5 transition-colors ${loading ? 'text-gray-400' : `text-gray-600`}`}
                             style={{ color: ACCENT_YELLOW }}
                         />
                         <button
