@@ -465,7 +465,7 @@ const AnimatedWelcomeBackground = ({ imgSrc }) => {
     return (
         <div ref={ref} className="animated-welcome-bg fixed inset-0 z-10 pointer-events-none opacity-30">
             <div className="welcome-img-wrap" aria-hidden>
-                <img src={imgSrc} alt="Welcome" className="welcome-img"/>
+                {/* <img src={imgSrc} alt="Welcome" className="welcome-img"/> */}
 
                 {/* Cheek blush elements (appear when smiling) */}
                 <div className="cheek cheek-left" aria-hidden />
@@ -1041,14 +1041,52 @@ const App = () => {
             </div>
 
             {/* 3. Minimal Footer Bar (Bottom Left) */}
-            <footer className={`fixed bottom-0 left-0 w-full text-xs text-gray-500 p-4 z-40`}>
-                <div className="max-w-7xl mx-auto flex justify-start items-center px-4 sm:px-6 lg:px-8 space-x-4">
-                    {/* Legal Links (Bottom Left) */}
-                    <a href="https://zama.ai" target="_blank" className="hover:text-gray-900 transition-colors">zama</a>
-                    <a href="https://docs.zama.org/protocol/zama-protocol-litepaper" target="_blank" className="hover:text-gray-900 transition-colors">whitepaper</a>
-                    <a href="https://x.com/zama" target="_blank" className="hover:text-gray-900 transition-colors">x</a>
-                </div>
-            </footer>
+            <footer className="fixed bottom-0 left-0 w-full z-40">
+  <div className="
+    max-w-7xl mx-auto flex justify-start items-center 
+    px-4 sm:px-6 lg:px-8 py-3 space-x-6 text-[11px]
+    backdrop-blur-md bg-black border-t border-white/10
+    animate-[fadeInUp_0.6s_ease-out]
+  ">
+    {/* Floating animated Zama glow */}
+    <div className="absolute inset-0 pointer-events-none">
+      <div className="w-32 h-32 bg-purple-500/20 rounded-full blur-3xl animate-pulse absolute -top-10 left-10"></div>
+    </div>
+
+    <a
+      href="https://zama.ai"
+      target="_blank"
+      className="
+        relative z-10 text-gray-300 hover:text-yellow-400 
+        transition-all duration-300 hover:scale-110
+      "
+    >
+      zama
+    </a>
+
+    <a
+      href="https://docs.zama.org/protocol/zama-protocol-litepaper"
+      target="_blank"
+      className="
+        relative z-10 text-gray-300 hover:text-yellow-400
+        transition-all duration-300 hover:scale-110
+      "
+    >
+      whitepaper
+    </a>
+
+    <a
+      href="https://x.com/zama"
+      target="_blank"
+      className="
+        relative z-10 text-gray-300 hover:text-yellow-400
+        transition-all duration-300 hover:scale-110
+      "
+    >
+      x
+    </a>
+  </div>
+</footer>
 
         </div>
     );
