@@ -1023,7 +1023,7 @@ const App = () => {
     <button
       type="submit"
       disabled={loading || !query.trim()}
-      className={`absolute inset-y-0 right-2 flex items-center justify-center p-2 rounded-full transition-all duration-300 ${
+      className={`absolute inset-y-0 right-2 flex items-center ${
         loading || !query.trim()
           ? "bg-gray-200 text-gray-400"
           : `bg-[#ffd208] text-gray-900 hover:bg-opacity-90`
