@@ -4,13 +4,8 @@ import fheImg from './assets/fhe.png';
 import { BookOpen, Code, Terminal, Zap, ExternalLink, AlertTriangle, User, Link } from 'lucide-react';
 
 // --- CONFIGURATION & COLORS ---
-const API_CONFIG = {
-    model: 'gemini-2.5-flash-preview-09-2025',
-    apiUrl: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent',
-    apiKey: 'AIzaSyCA7pEuVe2bLWGK9TueD0ndrcdOP4F7LE8', // set via environment or runtime
-    maxRetries: 5,
-    initialDelay: 1000,
-};
+// NOTE: All AI model calls are performed server-side via Netlify Functions.
+// Remove any API keys from frontend code. See `netlify/functions/ai.js`.
 
 // Frontend API base (set via Netlify env: VITE_API_BASE_URL)
 const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
@@ -255,7 +250,7 @@ const LiveBackgroundCharacter = ({ imgSrc }) => {
                     >
                         {isClipPlaying ? '⏸' : '▶'}
                     </button>
-                    <div className="speech-bubble">gZama</div>
+                    {/* speech bubble removed intentionally */}
                     {/* Hand bubble positioned near avatar; shows animated wave while active */}
                     {/* <div className="hand-bubble" aria-hidden>
                         <span className={isWaving ? 'hand-wave' : ''}>👋</span>
@@ -727,102 +722,38 @@ const fetchWithRetry = async (url, options, retries = 0) => {
  * Custom React hook for managing AI interactions.
  */
 const useAIQuery = () => {
+    // Minimal client-side hook that calls the serverless AI endpoint.
     const [query, setQuery] = useState('');
     const [response, setResponse] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
     const handleQuery = useCallback(async (q) => {
-        const currentQuery = q.trim();
+        const currentQuery = (q || '').trim();
         if (!currentQuery) return;
-
-        // Quick client-side relevance check to avoid unnecessary API calls
-        try {
-            const score = computeRelevanceScore(currentQuery);
-            if (score < 0.35) {
-                // Below threshold: refuse politely and avoid API call
-                setResponse({ text: 'i only gZama bro!', sources: [] });
-                setLoading(false);
-                return;
-            }
-        } catch (e) {
-            console.warn('Relevance check failed', e);
-        }
 
         setLoading(true);
         setError(null);
-        setResponse(null); // Clear previous response when new query is submitted
-
-        // The user's environment will supply the API Key
-        const fullApiUrl = `${API_CONFIG.apiUrl}?key=${API_CONFIG.apiKey}`;
-
-        // ENHANCED SYSTEM PROMPT: Prioritize grounding and Zama-specific context
-        let systemPrompt = `You are ZamaPedia, a specialized AI assistant. Your primary function is to provide comprehensive, factual, and extremely clear answers about Zama, Fully Homomorphic Encryption (FHE), the FHEVM, and related cryptographic concepts (like TFHE, Paillier, ZKPs).
-
-**Constraints for your response:**
-1.  **If the user's query is completely irrelevant to Zama, Fully Homomorphic Encryption (FHE), the FHEVM, or related cryptographic concepts (like TFHE, Paillier, ZKPs), your entire response must be the exact phrase: 'i only gZama bro!'. Do not include any other text, markdown, or sources if this rule applies.**
-2.  **Otherwise (if the query is relevant):** Strictly use external search to ground every factual statement. If you cannot find a source, state this clearly.
-3.  **Focus on simplicity and clarity.** Explain complex concepts in a way a non-technical audience can grasp.
-4.  **Do not use bold markdown (\*\*)** in your response, as the client handles highlighting.
-5.  **Format your response with standard markdown only (headings, lists, tables).** Do not inject any raw HTML, CSS, or span tags.
-6.  **Always include sources** using the exact format: [source: X], where X is the number of the source from your search tool. If a sentence uses information from multiple sources, include all of them, e.g., [source: 1, 3].
-7.  **Do not include a separate "Sources" section.** The application handles rendering the source links based on the citations.
-8.  **Ensure all links are provided by the grounding metadata** and do not hallucinate summary text as full URLs on separate lines if found.`;
-
-
-        const payload = {
-            contents: [{ parts: [{ text: currentQuery }] }],
-            tools: [{ "google_search": {} }],
-            systemInstruction: { parts: [{ text: systemPrompt }] },
-        };
+        setResponse(null);
 
         try {
-            const fetchOptions = {
+            const res = await fetch('/.netlify/functions/ai', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            };
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: currentQuery }),
+            });
 
-            const apiResponse = await fetchWithRetry(fullApiUrl, fetchOptions);
-            const result = await apiResponse.json();
-
-            const candidate = result.candidates?.[0];
-
-            if (candidate && candidate.content?.parts?.[0]?.text) {
-                const text = candidate.content.parts[0].text;
-                let sources = [];
-
-                // Check for the specific "i only gZama bro!" response
-                if (text.trim() === 'i only gZama bro!') {
-                    setResponse({ text, sources: [] });
-                    setLoading(false);
-                    return; // Exit early if the special response is triggered
-                }
-
-
-                // Normal response path: extract sources
-                const groundingMetadata = candidate.groundingMetadata;
-
-                if (groundingMetadata && groundingMetadata.groundingAttributions) {
-                    sources = groundingMetadata.groundingAttributions
-                        .map(attribution => ({
-                            uri: attribution.web?.uri,
-                            title: attribution.web?.title,
-                        }))
-                        .filter(source => source.uri && source.title);
-                }
-
-                setResponse({ text, sources });
-
-            } else {
-                setError('Received an empty or malformed response from the AI model. Try re-wording your query.');
+            if (!res.ok) {
+                const txt = await res.text();
+                throw new Error(`AI function error: ${res.status} ${txt}`);
             }
 
+            const data = await res.json();
+            const text = (data && data.text) ? data.text : (data?.raw?.candidates?.[0]?.content?.parts?.[0]?.text || '');
+            setResponse({ text, sources: data.sources || [] });
         } catch (err) {
-            console.error('AI Query Error:', err);
-            setError(`Failed to connect to the AI Assistant: ${err.message}.`);
+            console.error('askZama error', err);
+            setError(err.message || 'Unknown server error');
         } finally {
             setLoading(false);
         }

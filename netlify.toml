@@ -14,8 +14,8 @@
 #   force = true
 
 # If you convert the server to Netlify Functions, you could map /api/fetch to a function:
-# [[redirects]]
-#   from = "/api/fetch"
-#   to = "/.netlify/functions/fetch"
-#   status = 200
-#   force = true
+[[redirects]]
+  from = "/api/fetch"
+  to = "/.netlify/functions/fetch"
+  status = 200
+  force = true
