@@ -732,6 +732,21 @@ const useAIQuery = () => {
         const currentQuery = (q || '').trim();
         if (!currentQuery) return;
 
+        // Client-side relevance guard: refuse off-topic queries immediately.
+        const isZamaRelated = (text) => {
+            const s = (text || '').toLowerCase();
+            const kws = ['zama', 'fhe', 'fhevm', 'homomorphic', 'homomorphic encryption', 'zk', 'zkp', 'zero-knowledge', 'zama.ai', 'zama.org', 'farcaster', 'guild', 'leaderboard'];
+            for (const k of kws) if (s.includes(k)) return true;
+            return false;
+        };
+
+        if (!isZamaRelated(currentQuery)) {
+            // Short-circuit with a canonical refusal the UI already handles.
+            setResponse({ text: 'i only gZama bro!', sources: [] });
+            setLoading(false);
+            return;
+        }
+
         setLoading(true);
         setError(null);
         setResponse(null);
